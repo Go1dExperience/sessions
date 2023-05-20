@@ -1,3 +1,5 @@
+"use client";
+
 import { Program, Session } from "@/types";
 import Image from "next/image";
 import { Box, Card, CardContent, Typography } from "@mui/material";

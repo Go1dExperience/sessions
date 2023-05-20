@@ -1,24 +1,23 @@
 import { Session } from "@/types";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 
 interface Params {
   status?: string;
   short_title?: string;
 }
 
-export const GET = async (req: NextApiRequest, res: NextApiResponse) => {
-  let baseAPI = "https://api.entrylevel.net/test/sessions";
+const baseAPI = "https://api.entrylevel.net/test/sessions";
+export const GET = async (req: NextRequest, res: NextResponse) => {
   try {
     if (req.method !== "GET") {
-      return res.status(405).send({ message: "Invalid Method" });
+      return new Response(JSON.stringify({ message: "Invalid method" }), {
+        status: 405,
+      });
     }
 
     const response = await fetch(baseAPI);
-    const params = Object.fromEntries(
-      new URLSearchParams(req.url?.split("?")[1])
-    ) as Params;
+    const params = Object.fromEntries(req.nextUrl.searchParams) as Params;
     let data = (await response.json()) as Session[];
-    console.log({ params });
     if (params.status) {
       data = data.filter(session => session.status === params.status);
     }

@@ -2,6 +2,7 @@
 
 import { Session } from "@/types";
 import {
+  CircularProgress,
   FormControl,
   InputLabel,
   MenuItem,
@@ -28,7 +29,8 @@ const statusOptions = ["none", "OFFERING", "RUNNING", "OFFBOARDING"];
 export default function Session() {
   const [title, setTitle] = useState("");
   const [status, setStatus] = useState("");
-  const [sessions, setSessions] = useState<Session[]>([]);
+  const [sessions, setSessions] = useState<Session[]>();
+  const [loading, setLoading] = useState(true);
 
   const onChageSelect =
     (action: Dispatch<SetStateAction<string>>) =>
@@ -48,10 +50,21 @@ export default function Session() {
       }
       const response = await fetch(baseAPI);
       const data = (await response.json()) as Session[];
-      console.log(data)
       setSessions(data.filter((_, idx) => idx < 50));
+      setLoading(false);
     })();
   }, [title, status]);
+  if (loading) {
+    return <CircularProgress style={{
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)'
+    }} />
+  }
+  if(!loading && !sessions) {
+    return <h1>No result</h1>
+  }
   return (
     <Stack display="flex">
       <Stack
@@ -104,14 +117,14 @@ export default function Session() {
           flexWrap: "wrap",
         }}
       >
-        {sessions.length > 0 ? (
+        {sessions && sessions.length > 0 ? (
           sessions
             .filter((_, idx) => idx < 50)
             .map(session => {
               return <SessionItem session={session} key={session.id} />;
             })
         ) : (
-          <h1>Loading</h1>
+          <h1>No Result</h1>
         )}
       </div>
     </Stack>
