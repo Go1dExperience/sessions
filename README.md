@@ -2,7 +2,7 @@
 ## How to start
 ```sh
 npm i
-node run dev
+npm run dev
 ```
 Navigate to localhost:3000
 ## Design Choices
